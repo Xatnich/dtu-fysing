@@ -1,0 +1,68 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dtufysing}[2025/06/02 v0.0.1 by Max Karrebæk for use in notes and written material as part of studies associated with BSc in engineering physics at DTU]
+\RequirePackage{amssymb}
+
+%roman stuff
+\def\im{\mathrm{i}}
+\def\e{\mathrm{e}}
+\def\dd{\mathrm{d}}
+
+%%%%%%%%%%%%%%%%%%%%%
+%calculus
+%%%%%%%%%%%%%%%%%%%%%
+\let\ddspace=\thinspace
+
+%general command for lists of differentials
+\def\@diff#1#2#3{\@for\@iff:={#1}\do{#2#3\@iff}}
+
+\newcommand*{\diff}[2][\ddspace]{\@diff{#2}{#1}{\dd}}
+
+\newcommand*{\pdiff}[2][\ddspace]{\@diff{#2}{#1}{\partial}}
+
+
+\def\@ifempty#1{\def\@tempa{#1} \ifx\@tempa\@empty }
+
+\newcount\len@diff
+
+\def\@lenlist#1,#2\@nil{%
+  %\def\@tempa{#2}%
+  %\ifx\@tempa\@empty
+  \@ifempty{#2}
+    \len@diff=\@ne
+  \else
+    \len@diff=\tw@
+  \fi
+}
+%general command for differential quotients
+\def\@dif#1#2#3#4{%
+    \@lenlist#3,\@nil
+    \ifnum\len@diff=1
+        \def\@tempa{#2}
+        \ifx\@tempa\@empty
+        % \@ifempty{#2}
+            \frac{#4#1}{#4#3}
+        \else
+            \frac{#4^{#2}#1}{#4#3^{#2}}
+        \fi
+    \else
+        \frac{#4^{#2}#1}{\@diff{#3}{}{#4}}
+    \fi
+}
+
+\newcommand*\dif[3][]{%
+\@dif{#1}{#2}{#3}{\dd}
+}
+\newcommand*\pdif[3][]{%
+\@dif{#1}{#2}{#3}{\partial}
+}
+
+%%%%%%%%%%%%%%%%%%%
+%vector notation
+\def\vect#1{\boldsymbol{#1}}
+
+%operators
+\newcommand*\rot[1]{\vect{\nabla}\times #1}
+\newcommand*\dive[1]{\vect{\nabla}\cdot #1}
+\newcommand*\grad[1]{\vect{\nabla} #1}
+
+\newcommand*{\del}{\mathrm{\Delta}}
