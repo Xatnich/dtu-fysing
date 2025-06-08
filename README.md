@@ -1,2 +1,2 @@
 # dtu-fysing
-Packages and other LaTeX code eg. TikZ developed as part of studies relating to engineering physics at DTU
+Documentation for the LaTeX package `dtufysing'. Developed as part of the studies in BSc Engineering Physics @ DTU
