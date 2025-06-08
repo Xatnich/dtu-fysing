@@ -1,39 +1,114 @@
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{dtufysing}[2025/06/02 v0.0.1 by Max Karrebæk for use in notes and written material as part of studies associated with BSc in engineering physics at DTU]
-\RequirePackage{amssymb}
-
-%roman stuff
-\def\im{\mathrm{i}}
-\def\e{\mathrm{e}}
-\def\dd{\mathrm{d}}
-
-%%%%%%%%%%%%%%%%%%%%%
-%calculus
-%%%%%%%%%%%%%%%%%%%%%
+% \iffalse meta-comment
+%
+% Copyright (C) 2025 Max Rufus Schepelern Karrebæk
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in:
+%
+% http://www.latex-project.org/lppl.txt
+%
+% and version 1.3c or later is part of all distributions of
+% LaTeX version 2008-05-04 or later.
+%
+% \fi
+%
+% \iffalse
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\RequirePackage{amssymb}
+%<package>\ProvidesPackage{dtufysing}[2025-06-08 v0.0.1 by Max Karrebæk for use in notes and written material as part of studies associated with BSc in engineering physics at DTU.]
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{dtufysing}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+\DocInput{dtufysing.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+%\changes{v0.0.1}{2025-06-08}{Initial non-working version}
+%\GetFileInfo{dtufysing.sty}
+%\filedate
+%\fileversion
+%\fileinfo
+%
+% \title{The \textsf{DTUFysIng} packagepackage\thanks{This document corresponds to \textsf{DTUFysIng}~\fileversion, dated~\filedate.}}
+% \author{Max Rufus Schepelern Karrebæk \\ \texttt{s245173@dtu.dk, max@fysikraadet.pf.dk}}
+%
+% \maketitle
+% \section{Usage and examples}
+% \subsection{Easing adherence to ISO standards}
+% ISO requires that dimensionless constants (numbers) such as $\sqrt{-1}$ are typeset in \textrm{roman} font whereas physical dimensions are set in an \textit{italiziced} font. We therefore define the following macros:
+%
+% \DescribeMacro{\im}
+% \DescribeMacro{\e}
+% \DescribeMacro{\dd}
+% The macros should only be used in math mode: |$\im$| yields $\im$. 
+%
+%\subsection{Vector calculus}
+% Lists of differentials can be written as $\diff{x,y,z}$. Very useful when doing vector calculus!
+%Sometimes, we are not interested in index notation. 
+%
+% \MaybeStop{\PrintIndex}
+%
+% \section{Implementation}
+%
+%\begin{macro}{\im}
+%\begin{macro}{\e}
+%\begin{macro}{\dd}
+%These macros should probably be renamed to |\imaginary|, |\euler| and |\differentiald|, for compatibility reasons. 
+%The user would then be advised to define shorthand macros: |\newcommand*\im\imaginary| etc. Maybe for v0.0.2.
+%\begin{macrocode}
+\def\im{\mathrm{i}}%
+\def\e{\mathrm{e}}%
+\def\dd{\mathrm{d}}%
+%\end{macrocode}
+%\end{macro}
+%\end{macro}
+%\end{macro}
+%
+%\begin{macro}{\ddspace}
+%|\ddspace| is an internal macro used in differentials. Maybe it should be defined as a length and not just a macro\ldots Another project for v0.0.2!
+%\begin{macrocode}
 \let\ddspace=\thinspace
-
-%general command for lists of differentials
+%\end{macrocode}
+%\end{macro}
+%
+%\begin{macro}{\diff}
+%\begin{macro}{\pdiff}
+% They are both wrappers for the internal macro |\@iff|. They share the same syntax, |\diff\oarg{spacing}\marg{list}|.
+%\begin{macrocode}
 \def\@diff#1#2#3{\@for\@iff:={#1}\do{#2#3\@iff}}
-
 \newcommand*{\diff}[2][\ddspace]{\@diff{#2}{#1}{\dd}}
-
 \newcommand*{\pdiff}[2][\ddspace]{\@diff{#2}{#1}{\partial}}
-
-
-\def\@ifempty#1{\def\@tempa{#1} \ifx\@tempa\@empty }
-
+%\end{macrocode}
+%\end{macro}
+%\end{macro}
+%
+%This counter will be useful. Alongside some internal macros.
+%\begin{macrocode}
 \newcount\len@diff
-
+\def\@ifempty#1{\def\@tempa{#1} \ifx\@tempa\@empty }
+%\end{macrocode}
+%\begin{macrocode}
 \def\@lenlist#1,#2\@nil{%
-  %\def\@tempa{#2}%
-  %\ifx\@tempa\@empty
   \@ifempty{#2}
     \len@diff=\@ne
   \else
     \len@diff=\tw@
   \fi
 }
-%general command for differential quotients
+%\end{macrocode}
+%
+%\begin{macro}{\dif}
+%\begin{macro}{\pdif}
+%First, the internal command for differential quotients.
+%\begin{macrocode}
 \def\@dif#1#2#3#4{%
     \@lenlist#3,\@nil
     \ifnum\len@diff=1
@@ -48,21 +123,28 @@
         \frac{#4^{#2}#1}{\@diff{#3}{}{#4}}
     \fi
 }
-
+%\end{macrocode}
+%These should be used. They feature the same syntax, |\dif|\oarg{function}\marg{degree}\marg{denominator, list}. The argument \marg{degree} can be left empty which is normal for first degree differentials.
+%\begin{macrocode}
 \newcommand*\dif[3][]{%
 \@dif{#1}{#2}{#3}{\dd}
 }
 \newcommand*\pdif[3][]{%
 \@dif{#1}{#2}{#3}{\partial}
 }
-
-%%%%%%%%%%%%%%%%%%%
+%\end{macrocode}
+%\end{macro}
+%\end{macro}
 %vector notation
+%\begin{macrocode}
 \def\vect#1{\boldsymbol{#1}}
-
+%\end{macrocode}
 %operators
+%\begin{macrocode}
 \newcommand*\rot[1]{\vect{\nabla}\times #1}
 \newcommand*\dive[1]{\vect{\nabla}\cdot #1}
 \newcommand*\grad[1]{\vect{\nabla} #1}
-
-\newcommand*{\del}{\mathrm{\Delta}}
+\newcommand*\del{\mathrm{\Delta}}
+%\end{macrocode}
+% \Finale
+\endinput
