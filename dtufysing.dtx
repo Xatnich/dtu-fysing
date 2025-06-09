@@ -17,11 +17,13 @@
 % \iffalse
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\RequirePackage{amssymb}
-%<package>\ProvidesPackage{dtufysing}[2025-06-08 v0.0.1 by Max Karrebæk for use in notes and written material as part of studies associated with BSc in engineering physics at DTU.]
+%<package>\ProvidesPackage{dtufysing}[2025-06-09 v0.0.2 by Max Karrebæk for use in notes and written material as part of studies associated with BSc in engineering physics at DTU.]
 %
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{dtufysing}
+\usepackage{array}
+\usepackage{amsmath}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -32,119 +34,169 @@
 % \fi
 %
 %\changes{v0.0.1}{2025-06-08}{Initial non-working version}
+%\changes{v0.0.2}{2025-06-09}{Initial working version}
 %\GetFileInfo{dtufysing.sty}
 %\filedate
 %\fileversion
 %\fileinfo
 %
-% \title{The \textsf{DTUFysIng} packagepackage\thanks{This document corresponds to \textsf{DTUFysIng}~\fileversion, dated~\filedate.}}
-% \author{Max Rufus Schepelern Karrebæk \\ \texttt{s245173@dtu.dk, max@fysikraadet.pf.dk}}
+% \title{The \textsf{DTUFysIng} package\thanks{This document corresponds to \textsf{DTUFysIng}~\fileversion, dated~\filedate.}}
+% \author{Max Rufus Schepelern Karrebæk \\ \texttt{s245173@dtu.dk}, \texttt{max@fysikraadet.pf.dk}}
 %
 % \maketitle
+%
 % \section{Usage and examples}
 % \subsection{Easing adherence to ISO standards}
-% ISO requires that dimensionless constants (numbers) such as $\sqrt{-1}$ are typeset in \textrm{roman} font whereas physical dimensions are set in an \textit{italiziced} font. We therefore define the following macros:
+% ISO requires that dimensionless constants (numbers) such as $\sqrt{-1}$ are typeset in \textrm{roman} font whereas physical dimensions are set in an \textit{italiziced} font. Not surprisingly, being strict turns out to be useful eg. as part of an analysis of a mechanical system, you might have introduced the distance $d$. Later on, it is necessary to multiply the time derivate of some dimension $x$ by this distance. This can be written either incorrectly or the correct way:
+% \begin{align}
+%	d\frac{dx}{dt}&\quad\text{incorrect and confusing}\\
+%    d\dif[x]{}{t}&\quad\text{correct and understandable}
+% \end{align}
+% We therefore define the following macros.
 %
 % \DescribeMacro{\im}
 % \DescribeMacro{\e}
 % \DescribeMacro{\dd}
-% The macros should only be used in math mode: |$\im$| yields $\im$. 
+% These macros should only be used in math mode. Their use can be seen in table~\ref{tab:rmnumbers}. 
+% \begin{table}[h!]
+% \centering
+% \begin{tabular}{l>{\(}r<{\)}}
+% |a + b\im| & a + b\im \\
+% |\e^{-x^2}=\exp{(-x^2)}| 	& \e^{-x^2}=\exp{(-x^2)} \\
+% |\dd x| 				& \dd x
+% \end{tabular}
+% \caption{Roman numbers.}
+% \label{tab:rmnumbers}
+% \end{table}
+%  Electrical engineers should redefine the macro |\im| by adding |\def\im{\mathrm{j}}| to their preamble---maybe this will be a package option in the future.
 %
-%\subsection{Vector calculus}
-% Lists of differentials can be written as $\diff{x,y,z}$. Very useful when doing vector calculus!
-%Sometimes, we are not interested in index notation. 
+% \subsection{Calculus}
+% \DescribeMacro{\diff}
+% \DescribeMacro{\pdiff}
+% Lists of differentials can be written as |$\diff{x,y,z}$| yielding $\diff{x,y,z}$. This is very useful when doing vector calculus!
+% Consider the following integral.
+% \begin{equation}
+% \iiint x+y+z\diff{x,y,z}
+% \end{equation}
+% This can be written in the compact and readable expression |\iiint x+y+z\diff{x,y,z}| as opposed to writing the integrands explicitly |\,\dd x\,\dd y\,\dd z| or worse, by using |\mathrm{d}|. A corresponding command |\pdiff{x,y,z}| is also supplied: $\pdiff{x,y,z}$. The interproduct spacing can be modified using an optional argument |\pdiff[]{\alpha,\beta}|: $\pdiff[]{\alpha,\beta}$
 %
-% \MaybeStop{\PrintIndex}
+% \DescribeMacro{\dif}
+% \DescribeMacro{\pdif}
+% \textsf{DTUFysIng} makes it very easy to write the differential quotient. This can be achieved using either |\dif| og |\pdif|:
+% \begin{equation}
+% \dif[x]{2}{t} + \omega^2\dif[x]{}{t}=0
+% \end{equation}
+% Simply, by writing |\dif[x]{2}{t} + \omega^2\dif[x]{}{t}=0|. More complicated expressions are also allowed
+% \begin{equation}
+% \pdif{3}{x^2,y}f(x,z)=0
+% \end{equation}
+% |\pdif{3}{x^2,y}f(x,z)=0|
+%
+% \subsubsection{Vectors}
+% \DescribeMacro{\vect}
+% Vectors are defined using |\vect|. Maybe the macro should just redefine the plain command |\vec|. Vectors are set as boldsymbol: |\vect{f}(\vect{x})| yields $\vect{f}(\vect{x})$.
+%
+% \DescribeMacro{\dive}
+% \DescribeMacro{\rot}
+% \DescribeMacro{\grad}
+% The divergence, rotation and gradient of a vector field can be written as
+% \begin{equation}
+% \rot{(\rot{\vect{c}})} = \grad{(\dive{\vect{c}})} - \nabla^2\vect{c}
+% \end{equation}
+% |\rot{(\rot{\vect{c}})} = \grad{(\dive{\vect{c}})} - \nabla^2\vect{c}|.
+% Divergence is |\dive| and not |\div| as this macro is already defined to be the (useless) symbol $\div$.
+%
+% \MaybeStop{\PrintIndex\par\PrintChanges}
 %
 % \section{Implementation}
-%
-%\begin{macro}{\im}
-%\begin{macro}{\e}
-%\begin{macro}{\dd}
-%These macros should probably be renamed to |\imaginary|, |\euler| and |\differentiald|, for compatibility reasons. 
-%The user would then be advised to define shorthand macros: |\newcommand*\im\imaginary| etc. Maybe for v0.0.2.
-%\begin{macrocode}
+% \begin{macro}{\im}
+% \begin{macro}{\e}
+% \begin{macro}{\dd}
+% These macros should probably be renamed to
+% |\imaginary|, |\euler| and |\differentiald|, for compatibility reasons. 
+% The user would then be advised to define shorthand macros: 
+% |\newcommand*\im\imaginary| etc. Maybe for v0.0.3.
+%    \begin{macrocode}
 \def\im{\mathrm{i}}%
 \def\e{\mathrm{e}}%
 \def\dd{\mathrm{d}}%
-%\end{macrocode}
+%    \end{macrocode}
 %\end{macro}
 %\end{macro}
 %\end{macro}
 %
 %\begin{macro}{\ddspace}
-%|\ddspace| is an internal macro used in differentials. Maybe it should be defined as a length and not just a macro\ldots Another project for v0.0.2!
-%\begin{macrocode}
-\let\ddspace=\thinspace
-%\end{macrocode}
+%|\ddspace| is an internal macro used in differentials. Maybe it should be defined as a length and not just a macro\ldots Another project for v0.0.3!
+%    \begin{macrocode}
+\let\ddspace=\thinspace%
+%    \end{macrocode}
 %\end{macro}
 %
 %\begin{macro}{\diff}
 %\begin{macro}{\pdiff}
-% They are both wrappers for the internal macro |\@iff|. They share the same syntax, |\diff\oarg{spacing}\marg{list}|.
-%\begin{macrocode}
-\def\@diff#1#2#3{\@for\@iff:={#1}\do{#2#3\@iff}}
-\newcommand*{\diff}[2][\ddspace]{\@diff{#2}{#1}{\dd}}
-\newcommand*{\pdiff}[2][\ddspace]{\@diff{#2}{#1}{\partial}}
-%\end{macrocode}
+% They are both wrappers for the internal macro |\@iff|. They share the same syntax, |\diff|\oarg{spacing}\marg{comma-separated list}.
+%    \begin{macrocode}
+\def\@diff#1#2#3{\@for\@iff:={#1}\do{#2#3\@iff}}%
+\newcommand*{\diff}[2][\ddspace]{\@diff{#2}{#1}{\dd}}%
+\newcommand*{\pdiff}[2][\ddspace]{\@diff{#2}{#1}{\partial}}%
+%    \end{macrocode}
 %\end{macro}
 %\end{macro}
 %
-%This counter will be useful. Alongside some internal macros.
-%\begin{macrocode}
-\newcount\len@diff
-\def\@ifempty#1{\def\@tempa{#1} \ifx\@tempa\@empty }
-%\end{macrocode}
-%\begin{macrocode}
+%This counter will be useful. Alongside some internal macros. It is somewhat arbitrarily set to zero.
+%    \begin{macrocode}
+\newcount\len@diff%
+\len@diff=\z@%
+%    \end{macrocode}
+% \begin{macro}{\@lenlist}
+% Internal macro that measures whether a cs-list has one or more entries. If there is one entry the counter |@lenlist| is set to |1| and |2| otherwise. Maybe it should check whether there are entries.
+%    \begin{macrocode}
 \def\@lenlist#1,#2\@nil{%
-  \@ifempty{#2}
+  \def\@tempa{#2}
+  \ifx\@tempa\@empty%
     \len@diff=\@ne
   \else
     \len@diff=\tw@
-  \fi
-}
-%\end{macrocode}
+  \fi%
+}%
+%    \end{macrocode}
+% \end{macro}
 %
 %\begin{macro}{\dif}
 %\begin{macro}{\pdif}
-%First, the internal command for differential quotients.
-%\begin{macrocode}
+%First, the internal command for differential quotients. This is purely internal.
+%    \begin{macrocode}
 \def\@dif#1#2#3#4{%
-    \@lenlist#3,\@nil
-    \ifnum\len@diff=1
-        \def\@tempa{#2}
-        \ifx\@tempa\@empty
-        % \@ifempty{#2}
-            \frac{#4#1}{#4#3}
-        \else
-            \frac{#4^{#2}#1}{#4#3^{#2}}
-        \fi
+  \@lenlist#3,\@nil
+  \ifnum\len@diff=1
+    \def\@tempa{#2}
+    \ifx\@tempa\@empty
+      \frac{#4#1}{#4#3}
     \else
-        \frac{#4^{#2}#1}{\@diff{#3}{}{#4}}
+      \frac{#4^{#2}#1}{#4#3^{#2}}
     \fi
-}
-%\end{macrocode}
-%These should be used. They feature the same syntax, |\dif|\oarg{function}\marg{degree}\marg{denominator, list}. The argument \marg{degree} can be left empty which is normal for first degree differentials.
-%\begin{macrocode}
-\newcommand*\dif[3][]{%
-\@dif{#1}{#2}{#3}{\dd}
-}
-\newcommand*\pdif[3][]{%
-\@dif{#1}{#2}{#3}{\partial}
-}
-%\end{macrocode}
+  \else
+    \frac{#4^{#2}#1}{\@diff{#3}{}{#4}}
+  \fi%
+}%
+%    \end{macrocode}
+% |\dif| and |\pdif| should be used. They feature the same syntax, |\dif|\oarg{function}\marg{degree}\marg{denominator, list}. The argument \marg{degree} can be left empty which is normal for first degree differentials.
+%    \begin{macrocode}
+\newcommand*\dif[3][]{\@dif{#1}{#2}{#3}{\dd}}%
+\newcommand*\pdif[3][]{\@dif{#1}{#2}{#3}{\partial}}%
+%    \end{macrocode}
 %\end{macro}
 %\end{macro}
 %vector notation
-%\begin{macrocode}
-\def\vect#1{\boldsymbol{#1}}
-%\end{macrocode}
+%    \begin{macrocode}
+\def\vect#1{\boldsymbol{#1}}%
+%    \end{macrocode}
 %operators
-%\begin{macrocode}
-\newcommand*\rot[1]{\vect{\nabla}\times #1}
-\newcommand*\dive[1]{\vect{\nabla}\cdot #1}
-\newcommand*\grad[1]{\vect{\nabla} #1}
-\newcommand*\del{\mathrm{\Delta}}
-%\end{macrocode}
+%    \begin{macrocode}
+\newcommand*\rot[1]{\vect{\nabla}\times #1}%
+\newcommand*\dive[1]{\vect{\nabla}\cdot #1}%
+\newcommand*\grad[1]{\vect{\nabla} #1}%
+\newcommand*\del{\mathrm{\Delta}}%
+%    \end{macrocode}
 % \Finale
 \endinput
