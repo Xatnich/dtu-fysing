@@ -164,7 +164,7 @@
 %
 %\begin{macro}{\dif}
 %\begin{macro}{\pdif}
-%First, the internal command for differential quotients. This is purely internal.
+%First, the internal command for differential quotients.
 %    \begin{macrocode}
 \def\@dif#1#2#3#4{%
   \@lenlist#3,\@nil
@@ -180,14 +180,20 @@
   \fi%
 }%
 %    \end{macrocode}
-% |\dif| and |\pdif| should be used. They feature the same syntax, |\dif|\oarg{function}\marg{degree}\marg{denominator, list}. The argument \marg{degree} can be left empty which is normal for first degree differentials.
+% |\dif| and |\pdif| command should be used. They feature the same syntax, |\dif|\oarg{function}\marg{degree}\marg{denominator, list}. The argument \marg{degree} can be left empty which is normal for first degree differentials: $\pdif[f]{}{x}$ by |\pdif[f]{}{x}|. Of course both commands are purely for use in math mode. Advanced differentials: $\dif{n}{x^{n-2},y^{2}}$  by |\dif{n}{x^{n-2},y^{2}}|.
 %    \begin{macrocode}
 \newcommand*\dif[3][]{\@dif{#1}{#2}{#3}{\dd}}%
 \newcommand*\pdif[3][]{\@dif{#1}{#2}{#3}{\partial}}%
 %    \end{macrocode}
+% Other differential quotiens could easily be defined.
 %\end{macro}
 %\end{macro}
-%vector notation
+% \begin{macro}{\vect}
+% \begin{macro}{\rot}
+% \begin{macro}{\dive}
+% \begin{macro}{\grad}
+% \begin{macro}{\del}
+% These are all trivial, |f(\vect{r})|: $f(\vect{r})$.
 %    \begin{macrocode}
 \def\vect#1{\boldsymbol{#1}}%
 %    \end{macrocode}
@@ -198,5 +204,10 @@
 \newcommand*\grad[1]{\vect{\nabla} #1}%
 \newcommand*\del{\mathrm{\Delta}}%
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
 % \Finale
 \endinput
